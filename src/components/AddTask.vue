@@ -1,44 +1,36 @@
 <template>
     <div class="todo">
         <img alt="phCollab logo" src="../assets/phCollab_logo.png" class="logo">
-        <h1>TODO</h1>
+        <h3>TODO</h3>
         <div>
-            <input ref="todo_input" type="text" placeholder="Enter your todo here" v-model="input_value" @keyup.enter="addTask()"/>
-            <button class="add-task-btn" @click="addTask">Add TODO</button>
+            <input type="text" placeholder="Add Task" v-model="input_value"/>
+            <button class="btn-success" @click="addTask">Add TODO</button>
         </div>
         <div class="task-list" v-if="listEmpty"> 
             <p class="text-center" >Nothing to display</p>
         </div>
         <div class="task-list overflow" v-if="!listEmpty">
-            <div v-if="!listEmpty">
-                <div >                    
-                    <div  v-for="(item, objKey, index) in task_list" :key="item.id">
-                        <div>
-                            TODO #{{ objKey }} 
-                            <button class="close-btn" @click="closeTask(objKey)">x</button>
-                        </div>
-                        
-                        <div class="item" v-if="activeIndex!=index" @click="setActiveIndex(index)">{{ item }}</div>  
-                        <div v-else >
-                            <input class="update-input" ref="todo_update_input" :value="item" type="text" @keyup.enter="updateIndexValue(objKey)"/> 
-                            <p class="italic text-xs">Press enter to update</p> 
-                        </div>                                            
+            <ul v-if="!listEmpty">
+                <div class="task-header" >                    
+                    <li  v-for="(item, objKey, index) in task_list" :key="item.id">
+                        <span >{{ objKey }} </span> <br> <br>
+                        <span v-if="activeIndex!=index" @dblclick="setActiveIndex(index)">{{ item }}</span>  
+                        <input style="width: 90%;" v-else :value="item" type="text" @blur="updateIndexValue(objKey)"/>                      
+                        <button class="btn-success close-btn" @click="closeTask(objKey)">x</button>
+                        <br>
                         <span class="date">{{ currentDate }}</span>
                         <br>
                         <hr style="border: 1px solid white; ">
-                    </div>                    
+                    </li>
+                    
                 </div>                                
-            </div>                
+            </ul>                
         </div>        
     </div>    
 </template>
 
 <script>
 export default{
-    mounted() {        
-        this.$refs.todo_input.focus()
-        
-    },
     data(){
         return{
             input_value:"",
@@ -55,17 +47,15 @@ export default{
                 // let task_len = Object.entries(this.task_list).length+1
                 this.index++
                 // this.task_list.push(this.input_value)
-                this.task_list[this.index] = this.input_value
+                this.task_list["Task"+ this.index] = this.input_value
                 console.log(this.task_list)
                 this.listEmpty=false
                 this.input_value = "";     
                 this.currentDate = this.getCurrentDate()
-                this.$refs.todo_input.focus()
             }else{
                 alert("No task inputted")
             }            
         },
-        
         closeTask(item){
             // this.task_list.pop(item)
             delete this.task_list[item]
@@ -74,17 +64,14 @@ export default{
             if (task_len<1) {
                 this.listEmpty = true
             }
-            this.$refs.todo_input.focus()
-            this.activeIndex=null
+            
         },
         setActiveIndex(index){            
-            this.activeIndex=index     
-            this.$refs.todo_update_input.focus()       
+            this.activeIndex=index            
         },
         updateIndexValue(key){
             this.activeIndex=null            
             this.task_list[key] = event.target.value
-            this.$refs.todo_input.focus()
         },
         getCurrentDate(){
             const date = new Date(); // Get the current date
@@ -114,11 +101,6 @@ export default{
     #app {
         display: flex;
     }
-    div{
-        margin-bottom: 15px;
-        margin-top: 10px;
-    } 
-
     .logo{
         border: 2px solid white;
         /* /* margin: auto; */
@@ -132,42 +114,28 @@ export default{
         color: white;
         padding: 10px;
     }
-    .add-task-btn{
-        height: 40px;
-    }
-    .item{
-         /* border: 1px solid white; */
-        cursor: pointer;
-        /* width: 100%; */
-    }
-    
     input{
         width: 70%;
         /* width: 300px; */
-        height: 40px;
+        height: 25px;
         margin-right: 10px;
         padding: 5px;
-    }
-    .update-input{
-        width: 100%;
     }
     button{
         width: 27%;
         /* width: 100px; */
         height: 30px;
         padding: 5px;
-        cursor: pointer;
     }
     .task-list{
         border: 1px solid white;
         max-height: 300px;
         margin-top: 10px;
-        padding:10px;
-        border-radius: .375rem;
+        padding-left:0;
         
     }
     .overflow{
-        overflow: auto;
+        overflow-y: scroll;
     }
     .text-center{
         text-align: center;
@@ -186,27 +154,26 @@ export default{
         color: white;        
         float: right;
         font-size: 15px;
-        /* margin-top: -20px; */
-       
+        margin-top: -20px;
+        /* 0px 10px -50px 5px; */
+    }
+    .task-header{
+        /* border: 1px solid white; */
+        display: inline-block;
+        height: 20px; 
+        width: 100% !important;
+        margin-top: 20px;
     }
     .box{
         border: 1px solid white; 
         width: 100%;
-        
     }
     .date{
         float: right;
-        font-size: 14px;
+        font-size: 12px;
         margin-right: 15px;
     }
     hr{
         margin-right: 15px;
-    }
-    .text-xs {
-        font-size: .75rem;
-        line-height: 1rem;
-    }
-    .italic {
-        font-style: italic;
     }
 </style>
