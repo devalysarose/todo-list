@@ -1,6 +1,6 @@
 <template>
     <div class="text-white">
-        <TaskList @add="addTask"/>
+        <!-- <TaskList @add="addTask"/> -->
         <div class="border border-white rounded  text-white overflow-auto max-h-80 p-3 mt-3">
             <div class="text-xl text-center" v-show="listEmpty">
                 Nothing to display.
@@ -34,14 +34,11 @@
 </template>
 
 <script>
-import TaskList from './InputTask.vue'
+// import TaskList from './InputTask.vue'
 export default{
-    // props: ["task_list"],
-    components: { TaskList },
+    props: { task_list: Object, listEmpty:Boolean },
     data() {
         return {            
-            task_list: [],
-            listEmpty: true,
             index: 0,            
             currentDate: null,
             input_ref: "edit-ref"
@@ -51,26 +48,16 @@ export default{
         getInputRef(index) {
             return this.input_ref + "_" + index
         },
-        addTask(input) {            
-            if (input) {
-                this.currentDate = this.getCurrentDate()
-                this.index++
-                this.task_list.push({ key: this.index, name: input, edit: false, date: this.currentDate });
-                this.listEmpty = false                
-                
-                console.log(this.task_list)
-            } else {
-                alert("No task inputted")
-            }
-        },
-
+    
         closeTask(key) {
             const index = this.task_list.findIndex(item => item.key === key);
 
             this.task_list.splice(index, 1);
-            let task_len = Object.keys(this.task_list).length;
+            const task_len = Object.keys(this.task_list).length;
+            
             if (task_len < 1) {
-                this.listEmpty = true
+                // this.listEmpty = true
+                this.$emit('update:listEmpty', true);
             }
         },
 
@@ -91,22 +78,7 @@ export default{
             targetObject.edit = false;
             // this.$refs.todo_input.focus()
         },
-        getCurrentDate() {
-            const date = new Date(); // Get the current date
-            const options = {
-                year: 'numeric',
-                month: 'numeric',
-                day: 'numeric',
-                hour: 'numeric',
-                minute: 'numeric',
-                second: 'numeric',
-                hour12: true,
-            };
-
-            const formattedDate = date.toLocaleString('en-US', options);
-            console.log(formattedDate);
-            return formattedDate;
-        }
+        
     }
 }
 </script>

@@ -22,7 +22,8 @@ export default {
     },
     data(){
         return{
-            input_value: "",            
+            input_value: "",  
+            task_list: [],          
         }
     },
     methods:{        
