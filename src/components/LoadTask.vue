@@ -8,7 +8,7 @@
             <div v-show="!listEmpty">
                 <div v-for="(item, index) in task_list" :key="item.key">
                     <div class="grid grid-cols-12 gap-3">
-                        <div class="col-span-8">
+                        <div class="col-span-8 font-bold">
                             TODO #{{ item.key }}
                         </div>
                         <div class="col-span-4">
@@ -20,7 +20,7 @@
                     <div class="p-2" v-show="!item.edit" @click="enableEdit(item.key)">{{ item.name }}</div>
                     <div v-show="item.edit">
                         <input class="h-[40px] w-[100%] text-black px-2 mt-2 mb-2" :ref="getInputRef(index)"
-                            :value="item.name" type="text" @keyup.enter="updateIndexValue(item.key)" />
+                            :value="item.name" type="text" @keyup.enter="updateIndexValue(item.key, item.name)" />
                         <p class="italic text-xs">Press enter to update</p>
                     </div>
                     <span class="date float-right">{{ item.date }}</span>
@@ -41,7 +41,7 @@ export default{
         return {            
             index: 0,            
             currentDate: null,
-            input_ref: "edit-ref"
+            input_ref: "edit-ref",            
         }
     },
     methods: {
@@ -57,7 +57,7 @@ export default{
             
             if (task_len < 1) {
                 // this.listEmpty = true
-                this.$emit('update:listEmpty', true);
+                this.$emit('update', true);               
             }
         },
 
@@ -72,11 +72,15 @@ export default{
             });
         },
 
-        updateIndexValue(key) {
+        updateIndexValue(key, value) {
             const targetObject = this.task_list.find(item => item.key === key);
-            targetObject.name = event.target.value
-            targetObject.edit = false;
-            // this.$refs.todo_input.focus()
+            if(event.target.value){
+                targetObject.name = event.target.value
+                targetObject.edit = false;
+            }else{
+                alert("Please enter a todo!")
+            }
+                      
         },
         
     }

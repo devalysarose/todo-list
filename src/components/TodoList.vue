@@ -1,7 +1,7 @@
 <template>
     <div class="text-white">
         <InputTask @add="returnValue"/>
-        <LoadTask :task_list="task_list" :listEmpty="listEmpty" @update:listEmpty="updatelistEmpty"/>
+        <LoadTask :task_list="task_list" :listEmpty="listEmpty" @update="updatelistEmpty"/>
     </div>
 </template>
 
@@ -27,7 +27,7 @@ export default{
             if (this.value) {
                 const date = new Date();
                 const currentDate = date.toLocaleString();
-                this.index++
+                this.index++                
                 
                 this.task_list.push({ key: this.index, name: this.value, edit: false, date: currentDate });
                 this.listEmpty = false
@@ -40,6 +40,7 @@ export default{
 
         updatelistEmpty(new_value){
             this.listEmpty = new_value
+            this.index= 0
         }
     }
     
