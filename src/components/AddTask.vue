@@ -1,32 +1,43 @@
 <template>
-    <div class="todo">
+    <div class="text-white">
         <img alt="phCollab logo" src="../assets/phCollab_logo.png" class="logo">
-        <h1>TODO</h1>
-        <div>
-            <input ref="todo_input" type="text" placeholder="Enter your todo here" v-model="input_value" @keyup.enter="addTask()"/>
-            <button class="add-task-btn" @click="addTask">Add TODO</button>
+        <div class="text-3xl font-bold mt-10 mb-2">TODO</div>
+        <div class="grid grid-cols-12 gap-3">
+            <div class="col-span-8">
+                <input class="h-[40px] w-[100%] text-black px-2" ref="todo_input" type="text" placeholder="Enter your todo here" v-model="input_value" @keyup.enter="addTask()"/>
+            </div>
+            <div class="col-span-4">
+                <button class="h-[40px] w-[100%] bg-white text-black" @click="addTask">Add TODO</button>
+            </div>            
         </div>
-        <div class="task-list" v-if="listEmpty"> 
-            <p class="text-center">Nothing to display.</p>
-        </div>
-        <div class="task-list overflow" v-else>           
-            <div  v-for="(item, index) in task_list" :key="item.key">
-                <div>
-                    TODO #{{ item.key }} 
-                    <button class="close-btn" @click="closeTask(item.key)">x</button>
-                </div>
+        <div class="border border-white rounded  text-white overflow-auto max-h-80 p-3 mt-3"> 
+            <div class="text-xl text-center" v-show="listEmpty">
+                Nothing to display.
+            </div> 
+            <div v-show="!listEmpty">           
+                <div  v-for="(item, index) in task_list" :key="item.key">
+                    <div class="grid grid-cols-12 gap-3">
+                        <div class="col-span-8">
+                            TODO #{{ item.key }} 
+                        </div>
+                        <div class="col-span-4">
+                            <button class="float-right h-[20px] mr-2 text-white font-bold" @click="closeTask(item.key)">x</button>
+                        </div>                        
+                    </div>
                 
-                <div class="item" v-show="!item.edit" @click="enableEdit(item.key)">{{ item.name }}</div>  
-                <div  v-show="item.edit">
-                    <input class="update-input" :ref="getInputRef(index)" :value="item.name" type="text" @keyup.enter="updateIndexValue(item.key)"/> 
-                    <p class="italic text-xs">Press enter to update</p> 
-                </div>                                            
-                <span class="date">{{ currentDate }}</span>
-                <br>
-                <hr style="border: 1px solid white; ">
-            </div>                    
-        </div>        
-    </div>    
+                    <div class="p-2" v-show="!item.edit" @click="enableEdit(item.key)">{{ item.name }}</div>  
+                    <div  v-show="item.edit">
+                        <input class="h-[40px] w-[100%] text-black px-2 mt-2 mb-2" :ref="getInputRef(index)" :value="item.name" type="text" @keyup.enter="updateIndexValue(item.key)"/> 
+                        <p class="italic text-xs">Press enter to update</p> 
+                    </div>                                            
+                    <span class="date float-right">{{ currentDate }}</span>
+                    <br>
+                    <hr class="mb-2">
+                </div>                    
+            </div>
+        </div>                
+    </div> 
+ 
 </template>
 
 <script>
@@ -53,8 +64,7 @@ export default{
         addTask(){
             if(this.input_value){
                 this.index++
-                this.task_list.push({ key: this.index, name: this.input_value, edit: false });
-                console.log(this.task_list)
+                this.task_list.push({ key: this.index, name: this.input_value, edit: false });                
                 this.listEmpty=false
                 this.input_value = "";     
                 this.currentDate = this.getCurrentDate()
@@ -64,12 +74,11 @@ export default{
             }            
         },
         
-        closeTask(key){
-            
-            let task_len = Object.keys(this.task_list).length;
+        closeTask(key){                        
             const index = this.task_list.findIndex(item => item.key === key);
-
+            
             this.task_list.splice(index, 1);
+            let task_len = Object.keys(this.task_list).length;
             if (task_len<1) {
                 this.listEmpty = true
             }
@@ -79,9 +88,9 @@ export default{
         enableEdit(key){
             const targetObject = this.task_list.find(item => item.key === key);
             const index = this.task_list.findIndex(item => item.key === key);
-            targetObject.edit = true;
-          
+            targetObject.edit = true;          
             const inputElement = this.$refs[this.getInputRef(index)][0];
+
             this.$nextTick(() => {
                 inputElement.focus();
             });           
@@ -121,99 +130,17 @@ export default{
     #app {
         display: flex;
     }
-    div{
-        margin-bottom: 15px;
-        margin-top: 10px;
-    } 
 
     .logo{
         border: 2px solid white;
         /* /* margin: auto; */
        
     }
-    .todo{
-        /* border: 2px solid white; */
-        width: 100%;
-        /* margin: auto; */
-        text-align: left;
-        color: white;
-        padding: 10px;
-    }
-    .add-task-btn{
-        height: 40px;
-    }
+
     .item{
-         /* border: 1px solid white; */
         cursor: pointer;
-        /* width: 100%; */
     }
     
-    input{
-        width: 70%;
-        /* width: 300px; */
-        height: 40px;
-        margin-right: 10px;
-        padding: 5px;
-    }
-    .update-input{
-        width: 100%;
-    }
-    button{
-        width: 27%;
-        /* width: 100px; */
-        height: 30px;
-        padding: 5px;
-        cursor: pointer;
-    }
-    .task-list{
-        border: 1px solid white;
-        max-height: 300px;
-        margin-top: 10px;
-        padding:10px;
-        border-radius: .375rem;
-        
-    }
-    .overflow{
-        overflow: auto;
-    }
-    .text-center{
-        text-align: center;
-    }
-    li{
-        
-        text-decoration: none;
-        list-style: none;
-        /* text-align: ; */
-    }
-    .close-btn{
-        background: transparent;
-        border: 0px;
-        width: 10%;
-        height: 10px;
-        color: white;        
-        float: right;
-        font-size: 15px;
-        /* margin-top: -20px; */
-       
-    }
-    .box{
-        border: 1px solid white; 
-        width: 100%;
-        
-    }
-    .date{
-        float: right;
-        font-size: 14px;
-        margin-right: 15px;
-    }
-    hr{
-        margin-right: 15px;
-    }
-    .text-xs {
-        font-size: .75rem;
-        line-height: 1rem;
-    }
-    .italic {
-        font-style: italic;
-    }
+
+  
 </style>
