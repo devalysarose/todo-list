@@ -1,10 +1,11 @@
 <script setup>
-import AddTask from './components/AddTask.vue'
+import TodoList from './components/TodoList.vue'
 // import TheWelcome from './components/TheWelcome.vue'
 </script>
 
 <template>
-    <AddTask/>
+    <div class="text-white">
+        <TodoList />
+    </div>
     
 </template>
-
